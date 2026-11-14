@@ -43,6 +43,7 @@
 #include <boost/archive/iterators/transform_width.hpp>
 #include <boost/archive/iterators/ostream_iterator.hpp>
 
+#include <chrono>
 #include <regex>
 #include <sstream>
 
@@ -717,10 +718,16 @@ bool renderUntilIdle(TestContext& ctx) {
     observer.reset();
     // A settled map renders no frame on its own, and idle is reported after a frame: ask for one.
     ctx.getMap().triggerRepaint();
-    while (!observer.idle && !observer.mapLoadFailure) {
+    // A map that never settles fails the test rather than hanging the runner. The limit is a time, not
+    // a number of frames: while symbols fade, for 300 ms after each new placement, the map asks for the
+    // next frame as soon as one is done, so the number of frames grows with the speed of the machine.
+    // Each wait of the continuous-mode tests settles within a second (measured with llvmpipe: 300 to
+    // 900 ms, 420 to 2,530 frames); ten seconds leave room for slower machines.
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    while (!observer.idle && !observer.mapLoadFailure && std::chrono::steady_clock::now() < deadline) {
         ctx.getFrontend().renderOnce(ctx.getMap());
     }
-    return !observer.mapLoadFailure;
+    return observer.idle && !observer.mapLoadFailure;
 }
 
 TestOperations parseTestOperations(TestMetadata& metadata) {
