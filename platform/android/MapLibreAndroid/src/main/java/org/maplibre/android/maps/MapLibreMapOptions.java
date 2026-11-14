@@ -800,6 +800,10 @@ public class MapLibreMapOptions implements Parcelable {
    * icon-text-fit icon: while a line is within the margin of the vertical, a label and its icon can
    * face opposite ways.
    * </p>
+   * <p>
+   * The margin is read when the map is created and applies to every such label in every layer; it
+   * cannot be changed later or limited to some layers.
+   * </p>
    *
    * @param keepUprightMargin the margin in degrees, from 0 to 45; the map clamps values outside that
    *                          range and ignores NaN

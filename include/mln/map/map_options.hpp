@@ -105,6 +105,9 @@ public:
      * `icon-text-fit` icon: while a line is within the margin of the vertical, a label and its icon
      * can face opposite ways.
      *
+     * The margin is read when the map is created and applies to every such label in every layer; it
+     * cannot be changed later or limited to some layers.
+     *
      * @param degrees The margin, from 0 to 45. Values outside that range are clamped, NaN is ignored.
      * Past 45, labels could stay drawn more upside down than upright.
      * @return MapOptions for chaining options together.
