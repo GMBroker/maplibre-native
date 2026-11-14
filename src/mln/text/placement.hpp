@@ -242,6 +242,11 @@ protected:
     // MapOptions::withKeepUprightMargin, in degrees; 0 (the default) outside MapMode::Continuous.
     float keepUprightMargin = 0.0f;
     // Synced in updateLayerBuckets(), next to the opacities it depends on; unused without a margin.
+    // This member and the next one are written from const methods (updateLayerBuckets() calls
+    // syncLineLabelDirections()) without a lock, which is safe because they are only used on the
+    // render thread: updateLayerBuckets() runs only in RenderTree::prepare(), which Renderer::render()
+    // calls right after RenderOrchestrator::createRenderTree(), where placements are created. The
+    // next placement reads lineLabelDirections in the same place, as its previous placement's.
     mutable LineLabelDirections lineLabelDirections;
     // The buckets of each layer (bucket instance ids, sorted) when this placement last synced it.
     mutable std::unordered_map<std::string, std::vector<uint32_t>> lineLabelSyncedBuckets;
