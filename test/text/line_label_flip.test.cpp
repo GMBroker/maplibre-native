@@ -8,6 +8,7 @@
 #include <mln/renderer/buckets/symbol_bucket.hpp>
 #include <mln/renderer/paint_parameters.hpp>
 #include <mln/renderer/render_tile.hpp>
+#include <mln/renderer/tile_render_data.hpp>
 #include <mln/style/variable_anchor_offset_collection.hpp>
 #include <mln/text/placement.hpp>
 #include <mln/tile/tile.hpp>
@@ -91,8 +92,8 @@ namespace {
 
 class FakeTile final : public Tile {
 public:
-    explicit FakeTile(const OverscaledTileID& id)
-        : Tile(Kind::Geometry, id, "source") {}
+    explicit FakeTile(const OverscaledTileID& tileID)
+        : Tile(Kind::Geometry, tileID, "source") {}
     std::unique_ptr<TileRenderData> createRenderData() override { return nullptr; }
     void cancel() override {}
     bool layerPropertiesUpdated(const Immutable<style::LayerProperties>&) override { return true; }
